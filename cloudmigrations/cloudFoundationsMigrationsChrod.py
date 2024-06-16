@@ -1,6 +1,7 @@
 import holoviews as hv
 import pandas as pd
 from holoviews import opts
+from bokeh.io import output_file, save
 
 hv.extension('bokeh')
 
@@ -15,8 +16,8 @@ df = pd.DataFrame(data)
 
 # Define custom colors for nodes
 colors = {
-    'AWS Cloud Foundations': '#ff9900',  # AWS in Reddish
-    'Azure Cloud Foundations': '#069AF3',  # Azure in Blueish
+    'AWS Cloud Foundations': '#FF9900',  # AWS in Orange
+    'Azure Cloud Foundations': '#0072C6',  # Azure in Blue
     'LGIM AWS Cloud': '#B1B1B1',
     'LGRI Azure Cloud': '#C2C2C2',
     'LGRS Retail Protection Azure Cloud': '#D3D3D3',
@@ -52,19 +53,24 @@ nodes_ds = hv.Dataset(nodes_info, 'name')
 # Create Chord diagram with specified node sizes
 chord = hv.Chord((edges, nodes_ds)).opts(
     opts.Chord(
-        labels='name', 
-        cmap=colors,  # Using custom colors
+        labels='name',
+        cmap='Category20',  # Use a categorical color map for edges
         edge_cmap='Category20',
         node_color=hv.dim('name').categorize(colors),  # Apply specific colors to nodes
         node_size=hv.dim('size'),  # Use pre-computed node sizes
         edge_color=hv.dim('source').str(),
-        width=800, 
-        height=800, 
+        width=1000, 
+        height=1000, 
         title="Cloud Cost Migration Flow",
-        fontsize={'labels': '10pt', 'title': '12pt'}
+        fontsize={'labels': '10pt', 'title': '14pt'},
+        node_hover_fill_color='orange',  # Hover color for nodes
+        edge_hover_line_color='red',  # Hover color for edges
+        tools=['hover'],  # Add hover tool for better interactivity
+        toolbar='above'
     )
 )
 
-# Display the plot
-hv.save(chord, 'chord_diagram.html', backend='bokeh')
+# Save the plot as an HTML file
+output_file("chord_diagram.html")
+save(hv.render(chord, backend='bokeh'))
 chord
