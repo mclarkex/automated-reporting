@@ -1,60 +1,52 @@
-import matplotlib.pyplot as plt
-import numpy as np
-from matplotlib.patches import ConnectionPatch
+import plotly.graph_objects as go
 
-# Data
-labels = ['AWS Cloud Foundations', 'Azure Cloud Foundations', 'All other AWS', 'All other Azure']
-sizes = [5.72, 7.40, 28.88, 48.00]
+# Define the data
+data = {
+    'source': ['LGIM AWS Cloud', 'LGRI Azure Cloud', 'LGRS Retail Protection Azure Cloud', 'LGRS Retail Protection AWS Cloud', 'GT: Core Services Azure', 'GT: Digital AWS', 'GT: Group Data AWS'],
+    'target': ['AWS Cloud Foundations', 'Azure Cloud Foundations', 'Azure Cloud Foundations', 'AWS Cloud Foundations', 'Azure Cloud Foundations', 'AWS Cloud Foundations', 'AWS Cloud Foundations'],
+    'value':  [20, 30, 40, 10, 50, 60, 10]
+}
 
-# Brand colors
-aws_color = '#FF9900'
-azure_color = '#0072C6'
-other_aws_color = '#FFCC66'  # brighter shade of AWS orange
-other_azure_color = '#3399FF'  # brighter shade of Azure blue
-colors = [aws_color, azure_color, other_aws_color, other_azure_color]
+# Prepare source and target indices
+all_nodes = list(set(data['source'] + data['target']))
+node_indices = {node: idx for idx, node in enumerate(all_nodes)}
+source_indices = [node_indices[src] for src in data['source']]
+target_indices = [node_indices[tgt] for tgt in data['target']]
+values = data['value']
 
-explode = (0.1, 0.1, 0, 0)  # explode the first two slices
+# Node colors
+node_colors = ['#FF9900', '#0072C6', '#FFCC66', '#3399FF', '#FFD580', '#66B2FF', '#FFD580'] + ['#FF9900', '#0072C6']
 
-# Create the pie chart
-fig, ax = plt.subplots(figsize=(12, 9))
-wedges, texts, autotexts = ax.pie(sizes, explode=explode, labels=labels, colors=colors, autopct='%1.1f%%',
-                                  shadow=True, startangle=140, textprops={'fontsize': 14}, pctdistance=0.85)
+# Link colors
+link_colors = ['rgba(255, 153, 0, 0.6)', 'rgba(0, 114, 198, 0.6)', 'rgba(0, 114, 198, 0.6)', 'rgba(255, 153, 0, 0.6)',
+               'rgba(0, 114, 198, 0.6)', 'rgba(255, 153, 0, 0.6)', 'rgba(255, 153, 0, 0.6)']
 
-# Draw a circle at the center to make it look like a donut chart
-centre_circle = plt.Circle((0, 0), 0.70, fc='white', linewidth=1.25, edgecolor='black')
-fig.gca().add_artist(centre_circle)
-
-# Enhance the appearance of the pie chart
-for i, (wedge, text, autotext) in enumerate(zip(wedges, texts, autotexts)):
-    text.set_color('#333333')  # set text color to dark grey
-    text.set_fontsize(14)
-    autotext.set_color('white')  # set percentage text color to white
-    autotext.set_fontsize(14)
-    
-    # Add gradient effect to each wedge
-    wedge.set_edgecolor('white')
-    wedge.set_linewidth(2)
-
-# Equal aspect ratio ensures that pie is drawn as a circle.
-ax.axis('equal')
-
-# Add annotations to enhance information
-for i, (text, wedge) in enumerate(zip(texts, wedges)):
-    # Create the connection lines
-    angle = (wedge.theta2 - wedge.theta1) / 2. + wedge.theta1
-    x = np.cos(np.deg2rad(angle))
-    y = np.sin(np.deg2rad(angle))
-
-    horizontalalignment = {-1: "right", 1: "left"}[int(np.sign(x))]
-    connection = ConnectionPatch(
-        xyA=(0, 0), coordsA=ax.transData,
-        xyB=(x * 1.5, y * 1.5), coordsB=ax.transData,
-        arrowstyle="-", color='#333333', lw=1.5
+# Create the Sankey diagram
+fig = go.Figure(data=[go.Sankey(
+    node=dict(
+        pad=15,
+        thickness=20,
+        line=dict(color="black", width=0.5),
+        label=all_nodes,
+        color=node_colors
+    ),
+    link=dict(
+        source=source_indices,
+        target=target_indices,
+        value=values,
+        color=link_colors,
+        customdata=data['source'],
+        hovertemplate='Source: %{customdata}<br />Target: %{target.label}<br />Value: %{value}<extra></extra>'
     )
-    ax.add_patch(connection)
-    text.set_horizontalalignment(horizontalalignment)
-    text.set_position((x * 1.6, y * 1.6))
+)])
 
-plt.title('Current Cloud Distribution', fontsize=22, color='#333333', weight='bold', pad=20)
-plt.tight_layout()
-plt.show()
+fig.update_layout(
+    title_text="Cloud Distribution Flow Diagram",
+    font=dict(size=12, color='black'),
+    title_font=dict(size=20, color='black', family="Arial"),
+    plot_bgcolor='white',
+    paper_bgcolor='white',
+    margin=dict(l=20, r=20, t=50, b=20)
+)
+
+fig.show()
