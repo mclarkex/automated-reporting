@@ -6,6 +6,7 @@ on:
     - cron: '0 0 1 * *'
   workflow_dispatch:
 
+
 permissions:
   contents: write
   deployments: write
@@ -16,7 +17,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v2
 
     - name: Set up Python
       uses: actions/setup-python@v2
@@ -28,47 +29,63 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    - name: Create output directory
+      run: mkdir -p output/roadmaps
+
     - name: Run Azure Roadmap script
       run: python roadmaps/azureRoadmap.py
+
+    - name: Move Azure Roadmap to output folder
+      run: mv roadmaps/azure-cloud-foundations-roadmap.png output/roadmaps/
 
     - name: Run Engineering Roadmap script
       run: python roadmaps/engineeringRoadmap.py
 
+    - name: Move Engineering Roadmap to output folder
+      run: mv roadmaps/cloud-engineering-strategy-roadmap.png output/roadmaps/
+
     - name: Run FinOps Roadmap script
       run: python roadmaps/finOpsRoadmap.py
+
+    - name: Move FinOps Roadmap to output folder
+      run: mv roadmaps/finops-roadmap.png output/roadmaps/
 
     - name: Run Operations Roadmap script
       run: python roadmaps/operationsRoadmap.py
 
+    - name: Move Operations Roadmap to output folder
+      run: mv roadmaps/cloud-operations-roadmap.png output/roadmaps/
+
     - name: Run Test Roadmap script
       run: python roadmaps/testRoadmap.py
 
+    - name: Move Test Roadmap to output folder
+      run: mv roadmaps/test-roadmap.png output/roadmaps/
+
     - name: Update README and create release notes
       run: |
-        echo "## Latest Roadmaps Update - $(date '+%Y-%m-%d')" > roadmaps/RELEASE_NOTES.md
-        echo "Roadmaps have been updated with the latest data as of $(date '+%Y-%m-%d')." >> roadmaps/RELEASE_NOTES.md
-        echo "- Azure Cloud Foundations Roadmap" >> roadmaps/RELEASE_NOTES.md
-        echo "- Engineering Roadmap" >> roadmaps/RELEASE_NOTES.md
-        echo "- FinOps Roadmap" >> roadmaps/RELEASE_NOTES.md
-        echo "- Operations Roadmap" >> roadmaps/RELEASE_NOTES.md
-        echo "- Test Roadmap" >> roadmaps/RELEASE_NOTES.md
-        echo "This update includes adjustments for project timelines and progress." >> roadmaps/RELEASE_NOTES.md
+        LATEST_COMMIT_MSG=$(git log -1 --pretty=%B)
+        echo "## Latest Roadmaps Update - $(date '+%Y-%m-%d')" > output/roadmaps/RELEASE_NOTES.md
+        echo "Roadmaps have been updated with the latest data as of $(date '+%Y-%m-%d')." >> output/roadmaps/RELEASE_NOTES.md
+        echo "" >> output/roadmaps/RELEASE_NOTES.md
+        echo "### Commit Messages:" >> output/roadmaps/RELEASE_NOTES.md
+        echo "$LATEST_COMMIT_MSG" >> output/roadmaps/RELEASE_NOTES.md
 
-        echo "# Roadmaps" > roadmaps/README.md
-        echo "This repository contains the following roadmaps updated monthly:" >> roadmaps/README.md
-        echo "- Azure Cloud Foundations Roadmap" >> roadmaps/README.md
-        echo "- Engineering Roadmap" >> roadmaps/README.md
-        echo "- FinOps Roadmap" >> roadmaps/README.md
-        echo "- Operations Roadmap" >> roadmaps/README.md
-        echo "- Test Roadmap" >> roadmaps/README.md
-        echo "## Latest Update" >> roadmaps/README.md
-        cat roadmaps/RELEASE_NOTES.md >> roadmaps/README.md
+        echo "# Roadmaps" > output/roadmaps/README.md
+        echo "This repository contains the following roadmaps updated monthly:" >> output/roadmaps/README.md
+        echo "- Azure Cloud Foundations Roadmap" >> output/roadmaps/README.md
+        echo "- Engineering Roadmap" >> output/roadmaps/README.md
+        echo "- FinOps Roadmap" >> output/roadmaps/README.md
+        echo "- Operations Roadmap" >> output/roadmaps/README.md
+        echo "- Test Roadmap" >> output/roadmaps/README.md
+        echo "## Latest Update" >> output/roadmaps/README.md
+        cat output/roadmaps/RELEASE_NOTES.md >> output/roadmaps/README.md
 
     - name: Commit and push changes
       run: |
         git config --global user.name 'mclarkex'
-        git config --global user.email 'mclarke.1011010@gmail.com'
-        git add roadmaps/
+        git config --global user.email '41898282+github-actions[bot]@users.noreply.github.com'
+        git add output/roadmaps/
         if git diff-index --quiet HEAD; then
           echo "No changes to commit"
         else
@@ -78,13 +95,12 @@ jobs:
       env:
         GITHUB_TOKEN: ${{secrets.REPOSITORY_TOKEN}}
 
-   
     - name: Create GitHub release
       if: always()
       env:
         GITHUB_TOKEN: ${{secrets.REPOSITORY_TOKEN}}
       run: |
-          TAG_NAME="v$(date +'%Y%m%d')"
-          RELEASE_NAME="Roadmaps Update $(date +'%Y-%m-%d')"
-          BODY=$(cat roadmaps/RELEASE_NOTES.md)
-          gh release create "$TAG_NAME" --title "$RELEASE_NAME" --notes "$BODY"
+        TAG_NAME="v$(date +'%Y%m%d')"
+        RELEASE_NAME="Roadmaps Update $(date +'%Y-%m-%d')"
+        BODY=$(cat output/roadmaps/RELEASE_NOTES.md)
+        gh release create "$TAG_NAME" --title "$RELEASE_NAME" --notes "$BODY"
