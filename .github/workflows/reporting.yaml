@@ -68,24 +68,29 @@ jobs:
       run: |
         git config --global user.name 'mclarkex'
         git config --global user.email 'mclarke.1011010@gmail.com'
-        git add roadmaps/
-        git commit -m "Update roadmaps and documentation"
-        git push
+        git add new/
+        if git diff-index --quiet HEAD; then
+          echo "No changes to commit"
+        else
+          git commit -m "Update roadmaps and documentation"
+          git push
+        fi
       env:
         GITHUB_TOKEN: ${{secrets.REPOSITORY_TOKEN}}
 
     - name: Create GitHub release
+      if: always()
       uses: actions/create-release@v1
       with:
-        tag_name: "v$(date '+%Y%m%d')"
-        release_name: "Roadmaps Update $(date '+%Y-%m-%d')"
-        body: |
-          Roadmaps have been updated with the latest data as of $(date '+%Y-%m-%d').
-          - Azure Cloud Foundations Roadmap
-          - Engineering Roadmap
-          - FinOps Roadmap
-          - Operations Roadmap
-          - Test Roadmap
-          This update includes adjustments for project timelines and progress.
-      env:
+          tag_name: "v$(date '+%Y%m%d')"
+          release_name: "Roadmaps Update $(date '+%Y-%m-%d')"
+          body: |
+            Roadmaps have been updated with the latest data as of $(date '+%Y-%m-%d').
+            - Azure Cloud Foundations Roadmap
+            - Engineering Roadmap
+            - FinOps Roadmap
+            - Operations Roadmap
+            - Test Roadmap
+            This update includes adjustments for project timelines and progress.
+        env:
        GITHUB_TOKEN: ${{secrets.REPOSITORY_TOKEN}}

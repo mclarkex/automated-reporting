@@ -6,7 +6,11 @@ data = {
     'target': ['AWS Cloud Foundations', 'Azure Cloud Foundations', 'Azure Cloud Foundations', 'AWS Cloud Foundations', 'Azure Cloud Foundations', 'AWS Cloud Foundations', 'AWS Cloud Foundations'],
     'value':  [20, 30, 40, 10, 50, 60, 10],
     'cost':  [20000, 30000, 40000, 10000, 50000, 60000, 10000],
-    'time':  [6, 8, 7, 4, 9, 10, 5]  # in months
+    'time':  [6, 8, 7, 4, 9, 10, 5],  # in months
+    'efficiency': [15, 20, 25, 10, 30, 35, 5],  # efficiency improvement in percentage
+    'services': [10, 15, 20, 5, 25, 30, 8],  # number of services migrated
+    'user_impact': [500, 600, 700, 300, 800, 900, 250],  # number of users impacted
+    'cost_reduction': [10000, 12000, 15000, 5000, 20000, 25000, 4000]  # cost reduction in USD
 }
 
 # Prepare source and target indices
@@ -17,6 +21,10 @@ target_indices = [node_indices[tgt] for tgt in data['target']]
 values = data['value']
 costs = data['cost']
 times = data['time']
+efficiencies = data['efficiency']
+services = data['services']
+user_impacts = data['user_impact']
+cost_reductions = data['cost_reduction']
 
 # Node colors
 node_colors = ['#FF9900', '#0072C6', '#FFCC66', '#3399FF', '#FFD580', '#66B2FF', '#FFD580'] + ['#FF9900', '#0072C6']
@@ -39,8 +47,18 @@ fig = go.Figure(data=[go.Sankey(
         target=target_indices,
         value=values,
         color=link_colors,
-        customdata=list(zip(data['source'], data['target'], values, costs, times)),
-        hovertemplate='Source: %{customdata[0]}<br />Target: %{customdata[1]}<br />Value: %{customdata[2]}<br />Cost: $%{customdata[3]}<br />Time: %{customdata[4]} months<extra></extra>'
+        customdata=list(zip(data['source'], data['target'], values, costs, times, efficiencies, services, user_impacts, cost_reductions)),
+        hovertemplate=(
+            'Source: %{customdata[0]}<br />'
+            'Target: %{customdata[1]}<br />'
+            'Value: %{customdata[2]}<br />'
+            'Cost: $%{customdata[3]}<br />'
+            'Time: %{customdata[4]} months<br />'
+            'Efficiency Improvement: %{customdata[5]}%<br />'
+            'Services Migrated: %{customdata[6]}<br />'
+            'Users Impacted: %{customdata[7]}<br />'
+            'Cost Reduction: $%{customdata[8]}<extra></extra>'
+        )
     )
 )])
 
@@ -53,4 +71,8 @@ fig.update_layout(
     margin=dict(l=20, r=20, t=50, b=20)
 )
 
+
+# Display the plot
+# Save the plot as an HTML file
+fig.write_html("cloud_distribution_flow_diagram.html")
 fig.show()
