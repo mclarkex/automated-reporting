@@ -35,40 +35,40 @@ jobs:
       run: python roadmaps/engineeringRoadmap.py
 
     - name: Run FinOps Roadmap script
-      run: python automated-reporting/roadmaps/finOpsRoadmap.py
+      run: python roadmaps/finOpsRoadmap.py
 
     - name: Run Operations Roadmap script
-      run: python automated-reporting/roadmaps/operationsRoadmap.py
+      run: python roadmaps/operationsRoadmap.py
 
     - name: Run Test Roadmap script
-      run: python automated-reporting/roadmaps/testRoadmap.py
+      run: python roadmaps/testRoadmap.py
 
     - name: Update README and create release notes
       run: |
-        echo "## Latest Roadmaps Update - $(date '+%Y-%m-%d')" > automated-reporting/roadmaps/RELEASE_NOTES.md
-        echo "Roadmaps have been updated with the latest data as of $(date '+%Y-%m-%d')." >> automated-reporting/roadmaps/RELEASE_NOTES.md
-        echo "- Azure Cloud Foundations Roadmap" >> automated-reporting/roadmaps/RELEASE_NOTES.md
-        echo "- Engineering Roadmap" >> automated-reporting/roadmaps/RELEASE_NOTES.md
-        echo "- FinOps Roadmap" >> automated-reporting/roadmaps/RELEASE_NOTES.md
-        echo "- Operations Roadmap" >> automated-reporting/roadmaps/RELEASE_NOTES.md
-        echo "- Test Roadmap" >> automated-reporting/roadmaps/RELEASE_NOTES.md
-        echo "This update includes adjustments for project timelines and progress." >> automated-reporting/roadmaps/RELEASE_NOTES.md
+        echo "## Latest Roadmaps Update - $(date '+%Y-%m-%d')" > roadmaps/RELEASE_NOTES.md
+        echo "Roadmaps have been updated with the latest data as of $(date '+%Y-%m-%d')." >> roadmaps/RELEASE_NOTES.md
+        echo "- Azure Cloud Foundations Roadmap" >> roadmaps/RELEASE_NOTES.md
+        echo "- Engineering Roadmap" >> roadmaps/RELEASE_NOTES.md
+        echo "- FinOps Roadmap" >> roadmaps/RELEASE_NOTES.md
+        echo "- Operations Roadmap" >> roadmaps/RELEASE_NOTES.md
+        echo "- Test Roadmap" >> roadmaps/RELEASE_NOTES.md
+        echo "This update includes adjustments for project timelines and progress." >> roadmaps/RELEASE_NOTES.md
 
-        echo "# Roadmaps" > automated-reporting/roadmaps/README.md
-        echo "This repository contains the following roadmaps updated monthly:" >> automated-reporting/roadmaps/README.md
-        echo "- Azure Cloud Foundations Roadmap" >> automated-reporting/roadmaps/README.md
-        echo "- Engineering Roadmap" >> automated-reporting/roadmaps/README.md
-        echo "- FinOps Roadmap" >> automated-reporting/roadmaps/README.md
-        echo "- Operations Roadmap" >> automated-reporting/roadmaps/README.md
-        echo "- Test Roadmap" >> automated-reporting/roadmaps/README.md
-        echo "## Latest Update" >> automated-reporting/roadmaps/README.md
-        cat automated-reporting/roadmaps/RELEASE_NOTES.md >> automated-reporting/roadmaps/README.md
+        echo "# Roadmaps" > roadmaps/README.md
+        echo "This repository contains the following roadmaps updated monthly:" >> roadmaps/README.md
+        echo "- Azure Cloud Foundations Roadmap" >> roadmaps/README.md
+        echo "- Engineering Roadmap" >> roadmaps/README.md
+        echo "- FinOps Roadmap" >> roadmaps/README.md
+        echo "- Operations Roadmap" >> roadmaps/README.md
+        echo "- Test Roadmap" >> roadmaps/README.md
+        echo "## Latest Update" >> roadmaps/README.md
+        cat roadmaps/RELEASE_NOTES.md >> roadmaps/README.md
 
     - name: Commit and push changes
       run: |
         git config --global user.name 'mclarkex'
         git config --global user.email 'mclarke.1011010@gmail.com'
-        git add automated-reporting/roadmaps/
+        git add roadmaps/
         git commit -m "Update roadmaps and documentation"
         git push
       env:

@@ -4,7 +4,9 @@ import plotly.graph_objects as go
 data = {
     'source': ['LGIM AWS Cloud', 'LGRI Azure Cloud', 'LGRS Retail Protection Azure Cloud', 'LGRS Retail Protection AWS Cloud', 'GT: Core Services Azure', 'GT: Digital AWS', 'GT: Group Data AWS'],
     'target': ['AWS Cloud Foundations', 'Azure Cloud Foundations', 'Azure Cloud Foundations', 'AWS Cloud Foundations', 'Azure Cloud Foundations', 'AWS Cloud Foundations', 'AWS Cloud Foundations'],
-    'value':  [20, 30, 40, 10, 50, 60, 10]
+    'value':  [20, 30, 40, 10, 50, 60, 10],
+    'cost':  [20000, 30000, 40000, 10000, 50000, 60000, 10000],
+    'time':  [6, 8, 7, 4, 9, 10, 5]  # in months
 }
 
 # Prepare source and target indices
@@ -13,6 +15,8 @@ node_indices = {node: idx for idx, node in enumerate(all_nodes)}
 source_indices = [node_indices[src] for src in data['source']]
 target_indices = [node_indices[tgt] for tgt in data['target']]
 values = data['value']
+costs = data['cost']
+times = data['time']
 
 # Node colors
 node_colors = ['#FF9900', '#0072C6', '#FFCC66', '#3399FF', '#FFD580', '#66B2FF', '#FFD580'] + ['#FF9900', '#0072C6']
@@ -35,8 +39,8 @@ fig = go.Figure(data=[go.Sankey(
         target=target_indices,
         value=values,
         color=link_colors,
-        customdata=data['source'],
-        hovertemplate='Source: %{customdata}<br />Target: %{target.label}<br />Value: %{value}<extra></extra>'
+        customdata=list(zip(data['source'], data['target'], values, costs, times)),
+        hovertemplate='Source: %{customdata[0]}<br />Target: %{customdata[1]}<br />Value: %{customdata[2]}<br />Cost: $%{customdata[3]}<br />Time: %{customdata[4]} months<extra></extra>'
     )
 )])
 
