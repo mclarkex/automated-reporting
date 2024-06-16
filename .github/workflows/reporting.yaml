@@ -29,19 +29,19 @@ jobs:
         pip install -r requirements.txt
 
     - name: Run Azure Roadmap script
-      run: python azureRoadmap.py
+      run: python automated-reporting/roadmaps/azureRoadmap.py
 
     - name: Run Engineering Roadmap script
-      run: python engineeringRoadmap.py
+      run: python automated-reporting/roadmaps/engineeringRoadmap.py
 
     - name: Run FinOps Roadmap script
-      run: python finOpsRoadmap.py
+      run: python automated-reporting/roadmaps/finOpsRoadmap.py
 
     - name: Run Operations Roadmap script
-      run: python operationsRoadmap.py
+      run: python automated-reporting/roadmaps/operationsRoadmap.py
 
     - name: Run Test Roadmap script
-      run: python testRoadmap.py
+      run: python automated-reporting/roadmaps/testRoadmap.py
 
     - name: Update README and create release notes
       run: |
