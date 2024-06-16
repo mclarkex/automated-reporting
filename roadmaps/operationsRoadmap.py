@@ -1,7 +1,7 @@
 import os
 
 current_dir = os.getcwd()
-os.chdir("./automated-reporting/roadmaps/")
+os.chdir("./roadmaps/")
 
 def cloud_operations_road_map_generations():
 
