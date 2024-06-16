@@ -92,6 +92,6 @@ fig.update_layout(
 
 # Save the plot as an HTML file
 fig.write_html("cloud_distribution_flow_diagram.html")
-
+fig.write_image("cloud_distribution_flow_diagram.png")
 # Show the plot
 fig.show()

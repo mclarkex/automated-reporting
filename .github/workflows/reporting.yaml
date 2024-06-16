@@ -86,5 +86,5 @@ jobs:
       run: |
           TAG_NAME="v$(date +'%Y%m%d')"
           RELEASE_NAME="Roadmaps Update $(date +'%Y-%m-%d')"
-          BODY=$(cat automated-reporting/roadmaps/RELEASE_NOTES.md)
+          BODY=$(cat roadmaps/RELEASE_NOTES.md)
           gh release create "$TAG_NAME" --title "$RELEASE_NAME" --notes "$BODY"
