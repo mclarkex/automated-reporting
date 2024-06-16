@@ -100,7 +100,7 @@ jobs:
       env:
         GITHUB_TOKEN: ${{secrets.REPOSITORY_TOKEN}}
       run: |
-        TAG_NAME="v$(date +'%Y%m%d')"
-        RELEASE_NAME="Roadmaps Update $(date +'%Y-%m-%d')"
+        TAG_NAME="v$(date +'%Y%m%d-%H%M%S')"
+        RELEASE_NAME="Roadmaps Update $(date +'%Y-%m-%d %H:%M:%S')"
         BODY=$(cat output/roadmaps/RELEASE_NOTES.md)
         gh release create "$TAG_NAME" --title "$RELEASE_NAME" --notes "$BODY"

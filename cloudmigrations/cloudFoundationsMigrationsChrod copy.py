@@ -52,7 +52,7 @@ nodes_info = pd.DataFrame({
 })
 
 # Create HoloViews Datasets for nodes and edges
-edges = hv.Dataset(df, ['source', 'target'], 'value')
+edges = hv.Dataset(df, ['source', 'target'], ['value', 'cost', 'time', 'efficiency', 'services', 'user_impact'])
 nodes_ds = hv.Dataset(nodes_info, 'name')
 
 # Create Chord diagram with specified node sizes
@@ -64,25 +64,15 @@ chord = hv.Chord((edges, nodes_ds)).opts(
         node_color=hv.dim('name').categorize(colors),  # Apply specific colors to nodes
         node_size=hv.dim('size'),  # Use pre-computed node sizes
         edge_color=hv.dim('source').str(),
-        width=1000, 
-        height=1000, 
+        width=1000,
+        height=1000,
         title="Cloud Cost Migration Flow",
         fontsize={'labels': '10pt', 'title': '14pt'},
         node_hover_fill_color='orange',  # Hover color for nodes
         edge_hover_line_color='red',  # Hover color for edges
         tools=['hover'],  # Add hover tool for better interactivity
-        toolbar='above'
-    )
-)
-
-# Enhance tooltips to include additional information
-hover = chord.opts(
-    opts.Chord(
-        inspection_policy='nodes',  # Show tooltips on nodes
-        tools=['hover'],  # Enable hover tool
-        hover_line_color='red',  # Hover color for lines
-        hover_fill_color='orange',  # Hover color for nodes
-        tooltips=[
+        toolbar='above',
+        hover_tooltips=[
             ("Source", "@source"),
             ("Target", "@target"),
             ("Value", "@value"),
@@ -97,5 +87,5 @@ hover = chord.opts(
 
 # Save the plot as an HTML file
 output_file("enhanced_chord_diagram.html")
-save(hv.render(hover, backend='bokeh'))
-hover
+save(hv.render(chord, backend='bokeh'))
+chord
