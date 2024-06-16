@@ -1,4 +1,5 @@
 import plotly.graph_objects as go
+from datetime import datetime
 
 # Define the data
 data = {
@@ -27,11 +28,25 @@ user_impacts = data['user_impact']
 cost_reductions = data['cost_reduction']
 
 # Node colors
-node_colors = ['#FF9900', '#0072C6', '#FFCC66', '#3399FF', '#FFD580', '#66B2FF', '#FFD580'] + ['#FF9900', '#0072C6']
+node_colors = []
+for node in all_nodes:
+    if 'AWS' in node and 'Foundations' in node:
+        node_colors.append('#FF9900')
+    elif 'Azure' in node and 'Foundations' in node:
+        node_colors.append('#0072C6')
+    elif 'AWS' in node:
+        node_colors.append('#FFD580')  # lighter shade of AWS orange
+    elif 'Azure' in node:
+        node_colors.append('#66B2FF')  # lighter shade of Azure blue
+    else:
+        node_colors.append('#CCCCCC')  # grey for any other nodes
 
 # Link colors
 link_colors = ['rgba(255, 153, 0, 0.6)', 'rgba(0, 114, 198, 0.6)', 'rgba(0, 114, 198, 0.6)', 'rgba(255, 153, 0, 0.6)',
                'rgba(0, 114, 198, 0.6)', 'rgba(255, 153, 0, 0.6)', 'rgba(255, 153, 0, 0.6)']
+
+# Get the current date
+current_date = datetime.now().strftime("%Y-%m-%d")
 
 # Create the Sankey diagram
 fig = go.Figure(data=[go.Sankey(
@@ -63,16 +78,20 @@ fig = go.Figure(data=[go.Sankey(
 )])
 
 fig.update_layout(
-    title_text="Cloud Distribution Flow Diagram",
+    title=dict(
+        text=f"Cloud Distribution Flow Diagram<br><sup>California Programme | Created on {current_date}</sup>",
+        font=dict(size=22, color='black', family="Arial"),
+        x=0.5,
+        xanchor='center'
+    ),
     font=dict(size=12, color='black'),
-    title_font=dict(size=20, color='black', family="Arial"),
     plot_bgcolor='white',
     paper_bgcolor='white',
-    margin=dict(l=20, r=20, t=50, b=20)
+    margin=dict(l=20, r=20, t=70, b=20)
 )
 
-
-# Display the plot
 # Save the plot as an HTML file
 fig.write_html("cloud_distribution_flow_diagram.html")
+
+# Show the plot
 fig.show()

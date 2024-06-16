@@ -68,7 +68,7 @@ jobs:
       run: |
         git config --global user.name 'mclarkex'
         git config --global user.email 'mclarke.1011010@gmail.com'
-        git add newROADMAPS/
+        git add roadmaps/
         if git diff-index --quiet HEAD; then
           echo "No changes to commit"
         else
@@ -78,19 +78,13 @@ jobs:
       env:
         GITHUB_TOKEN: ${{secrets.REPOSITORY_TOKEN}}
 
+   
     - name: Create GitHub release
       if: always()
-      uses: actions/create-release@v1
-      with:
-          tag_name: "v$(date '+%Y%m%d')"
-          release_name: "Roadmaps Update $(date '+%Y-%m-%d')"
-          body: |
-            Roadmaps have been updated with the latest data as of $(date '+%Y-%m-%d').
-            - Azure Cloud Foundations Roadmap
-            - Engineering Roadmap
-            - FinOps Roadmap
-            - Operations Roadmap
-            - Test Roadmap
-            This update includes adjustments for project timelines and progress.
       env:
-       GITHUB_TOKEN: ${{secrets.REPOSITORY_TOKEN}}
+        GITHUB_TOKEN: ${{secrets.REPOSITORY_TOKEN}}
+      run: |
+          TAG_NAME="v$(date +'%Y%m%d')"
+          RELEASE_NAME="Roadmaps Update $(date +'%Y-%m-%d')"
+          BODY=$(cat automated-reporting/roadmaps/RELEASE_NOTES.md)
+          gh release create "$TAG_NAME" --title "$RELEASE_NAME" --notes "$BODY"
