@@ -2,7 +2,7 @@ import os
 from datetime import datetime, timedelta
 
 current_dir = os.getcwd()
-os.chdir("./roadmaps/")
+os.chdir("./automated-reporting/roadmaps/")
 
 def move_date(date_str, days):
     date = datetime.strptime(date_str, "%Y-%m-%d")

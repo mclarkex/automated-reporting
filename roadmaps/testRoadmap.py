@@ -1,7 +1,7 @@
 import os
 
 current_dir = os.getcwd()
-os.chdir("./roadmaps/")
+os.chdir("./automated-reporting/roadmaps/")
 
 def azure_test_road_map_generations():
 

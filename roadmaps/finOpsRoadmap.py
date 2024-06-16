@@ -1,7 +1,7 @@
 import os
 
 current_dir = os.getcwd()
-os.chdir("./roadmaps/")
+os.chdir("./automated-reporting/roadmaps/")
 
 def azure_finops_road_map_generations():
 
@@ -119,7 +119,7 @@ def azure_finops_road_map_generations():
     roadmap.set_footer("Designed by Group Cloud Engineering")
     roadmap.draw()
 
-    roadmap.save("azure-finops-roadmap.png")
+    roadmap.save("finops-roadmap.png")
 
 def main():
   azure_finops_road_map_generations()
