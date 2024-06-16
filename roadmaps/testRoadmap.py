@@ -115,7 +115,7 @@ def azure_test_road_map_generations():
     roadmap.set_footer("Designed by Group Cloud Engineering")
     roadmap.draw()
 
-    roadmap.save("azure-test-roadmap.png")
+    roadmap.save("test-roadmap.png")
 
 def main():
   azure_test_road_map_generations()

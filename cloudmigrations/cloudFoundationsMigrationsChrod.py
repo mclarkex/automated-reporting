@@ -9,7 +9,12 @@ hv.extension('bokeh')
 data = {
     'source': ['LGIM AWS Cloud', 'LGRI Azure Cloud', 'LGRS Retail Protection Azure Cloud', 'LGRS Retail Protection AWS Cloud', 'GT: Core Services Azure', 'GT: Digital AWS', 'GT: Group Data AWS'],
     'target': ['AWS Cloud Foundations', 'Azure Cloud Foundations', 'Azure Cloud Foundations', 'AWS Cloud Foundations', 'Azure Cloud Foundations', 'AWS Cloud Foundations', 'AWS Cloud Foundations'],
-    'value':  [20, 30, 40, 10, 50, 60, 10]
+    'value':  [20, 30, 40, 10, 50, 60, 10],
+    'cost': [20000, 30000, 40000, 10000, 50000, 60000, 10000],
+    'time': [6, 8, 7, 4, 9, 10, 5],  # in months
+    'efficiency': [15, 20, 25, 10, 30, 35, 5],  # efficiency improvement in percentage
+    'services': [10, 15, 20, 5, 25, 30, 8],  # number of services migrated
+    'user_impact': [500, 600, 700, 300, 800, 900, 250]  # number of users impacted
 }
 
 df = pd.DataFrame(data)
@@ -70,7 +75,27 @@ chord = hv.Chord((edges, nodes_ds)).opts(
     )
 )
 
+# Enhance tooltips to include additional information
+hover = chord.opts(
+    opts.Chord(
+        inspection_policy='nodes',  # Show tooltips on nodes
+        tools=['hover'],  # Enable hover tool
+        hover_line_color='red',  # Hover color for lines
+        hover_fill_color='orange',  # Hover color for nodes
+        tooltips=[
+            ("Source", "@source"),
+            ("Target", "@target"),
+            ("Value", "@value"),
+            ("Cost", "@cost"),
+            ("Time (months)", "@time"),
+            ("Efficiency (%)", "@efficiency"),
+            ("Services Migrated", "@services"),
+            ("Users Impacted", "@user_impact")
+        ]
+    )
+)
+
 # Save the plot as an HTML file
-output_file("chord_diagram.html")
-save(hv.render(chord, backend='bokeh'))
-chord
+output_file("enhanced_chord_diagram.html")
+save(hv.render(hover, backend='bokeh'))
+hover
